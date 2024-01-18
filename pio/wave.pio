@@ -1,0 +1,11 @@
+; PIO waveform output
+; --------------------------------
+;
+.program wave
+
+start:
+
+.wrap_target
+    SET pins 0 side 0 [12]
+    SET pins 21 side 0 [12]
+.wrap

@@ -18,7 +18,7 @@
 static const uint16_t wave_program_instructions[] = {
             //     .wrap_target
     0xfc00, //  0: set    pins, 0                [28]
-    0xfc15, //  1: set    pins, 21               [28]
+    0xfc1f, //  1: set    pins, 31               [28]
             //     .wrap
 };
 

@@ -11,28 +11,29 @@
 
 #include "wave.pio.h"
 
-#define PIO_SM_DAC                          0
-#define PIO_DAC_OFFSET                      0
-
 static int          dacSM;
 
 void pioInit() {
-    uint            dacOffset = PIO_DAC_OFFSET;
+    uint            dacOffset = 0;
     uint            p = DAC_PIN_D0;
 
-    gpio_set_function(DAC_SYNC_PIN, GPIO_FUNC_SIO);
-    gpio_set_dir(DAC_SYNC_PIN, false);
-    gpio_pull_down(DAC_SYNC_PIN);
+    // gpio_set_function(DAC_SYNC_PIN, GPIO_FUNC_SIO);
+    // gpio_set_dir(DAC_SYNC_PIN, false);
+    // gpio_pull_down(DAC_SYNC_PIN);
+
+    pio_add_program_at_offset(pio0, &wave_program, dacOffset);
 
     dacSM = pio_claim_unused_sm(pio0, true);
 
     pio_sm_config dacConfig = wave_program_get_default_config(dacOffset);
 
+    sm_config_set_set_pins(&dacConfig, DAC_PIN_D0, 5);
+
+    pio_sm_set_consecutive_pindirs(pio0, dacSM, DAC_PIN_D0, 5, true);
+
     while (p <= DAC_PIN_D13) {
         pio_gpio_init(pio0, p++);
     }
-
-    sm_config_set_set_pins(&dacConfig, DAC_PIN_D0, 5);
 
     pio_sm_init(pio0, dacSM, dacOffset, &dacConfig);
     pio_sm_set_enabled(pio0, dacSM, true);
